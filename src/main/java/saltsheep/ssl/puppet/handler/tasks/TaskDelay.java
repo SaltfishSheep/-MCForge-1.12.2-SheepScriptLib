@@ -17,10 +17,6 @@ public class TaskDelay extends TaskBaseTimer {
     }
 
     @Override
-    public void onEnded(JobPuppetSSLData.RotationController controller) {
-    }
-
-    @Override
     public float getCurrentX(JobPuppetSSLData.RotationController controller) {
         return controller.xStart;
     }

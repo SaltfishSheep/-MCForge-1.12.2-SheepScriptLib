@@ -14,7 +14,7 @@ public class TaskPlay extends TaskBaseTimer {
     private float zEnd;
     public PlayMode mode = PlayMode.NORMAL;
 
-    private long lastTime;
+    private double lastTime;
     private float lastPersent;
 
     public TaskPlay(long durationTime, float xEnd, float yEnd, float zEnd){
@@ -30,16 +30,17 @@ public class TaskPlay extends TaskBaseTimer {
 
     @Override
     public void onEnded(JobPuppetSSLData.RotationController controller) {
+        super.onEnded(controller);
         controller.xStart = xEnd;
         controller.yStart = yEnd;
         controller.zStart = zEnd;
     }
 
-    public float updateProcessPercent(){
-        long nowTime = System.currentTimeMillis();
+    public float getCurrentPercent(){
+        double nowTime = getTime();
         if(lastTime!=nowTime) {
-            float spendTime = nowTime - startTime;
-            lastPersent = spendTime / ((float) durationTime);
+            double spendTime = nowTime - startTime;
+            lastPersent = (float) (spendTime / (durationTime));
             lastTime = nowTime;
         }
         return lastPersent;
@@ -47,17 +48,17 @@ public class TaskPlay extends TaskBaseTimer {
 
     @Override
     public float getCurrentX(JobPuppetSSLData.RotationController controller) {
-        return mode.getRotation(controller.xStart,xEnd,updateProcessPercent());
+        return mode.getRotation(controller.xStart,xEnd, getCurrentPercent());
     }
 
     @Override
     public float getCurrentY(JobPuppetSSLData.RotationController controller) {
-        return mode.getRotation(controller.yStart,yEnd,updateProcessPercent());
+        return mode.getRotation(controller.yStart,yEnd, getCurrentPercent());
     }
 
     @Override
     public float getCurrentZ(JobPuppetSSLData.RotationController controller) {
-        return mode.getRotation(controller.zStart,zEnd,updateProcessPercent());
+        return mode.getRotation(controller.zStart,zEnd, getCurrentPercent());
     }
 
     @Override

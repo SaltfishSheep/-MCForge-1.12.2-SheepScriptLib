@@ -1,5 +1,6 @@
 package saltsheep.ssl;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.*;
@@ -16,7 +17,8 @@ import saltsheep.ssl.script.ScriptLoader;
 public class Proxy {
 	
 	public static void preInit() {
-		((LaunchClassLoader)Proxy.class.getClassLoader()).registerTransformer("saltsheep.ssl.puppet.asm.Trans");
+		if(SheepScriptLibConfig.neoPuppet_enable)
+			((LaunchClassLoader)Proxy.class.getClassLoader()).registerTransformer("saltsheep.ssl.puppet.asm.Trans");
 		NetworkHandler.register();
 		WrapperNpcAPI.EVENT_BUS.register(NPCEventSubscriber.subscriber);
 		MinecraftForge.EVENT_BUS.register(AnimationHandler.subscriber);

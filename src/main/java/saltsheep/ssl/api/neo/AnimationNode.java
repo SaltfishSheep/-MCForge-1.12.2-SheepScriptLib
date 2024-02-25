@@ -1,6 +1,7 @@
 package saltsheep.ssl.api.neo;
 
 
+import noppes.npcs.api.entity.ICustomNpc;
 import noppes.npcs.entity.EntityNPCInterface;
 import saltsheep.ssl.puppet.handler.JobPuppetSSLData;
 import saltsheep.ssl.puppet.handler.tasks.*;
@@ -43,6 +44,10 @@ public class AnimationNode {
         for(Integer part:parts.keySet())
             parts.put(part, new TaskReset());
         return this;
+    }
+
+    public void play(ICustomNpc<EntityNPCInterface> npc){
+        play(npc.getMCEntity());
     }
 
     public void play(EntityNPCInterface npc){

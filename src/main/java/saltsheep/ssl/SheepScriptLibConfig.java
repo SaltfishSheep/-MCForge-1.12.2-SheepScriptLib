@@ -29,5 +29,8 @@ public class SheepScriptLibConfig {
 
 	@Config.Comment("是否启用Task功能，如果不启用，添加Task将会无效（修改必须重启生效）")
 	public static boolean task_enable = true;
+
+	@Config.Comment("是否启用新木偶框架，这会修改字节码，部分魔改版mod会因此冲突（修改必须重启生效）")
+	public static boolean neoPuppet_enable = true;
 	
 }

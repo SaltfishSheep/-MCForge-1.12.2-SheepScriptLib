@@ -73,7 +73,7 @@ public class JobPuppetSSLData {
         private IAnimationTask get(){
             IAnimationTask first = tasks.peek();
             while (first!=null&&first.canEnd(this)){
-                System.out.println(first+"canEnd");
+                //System.out.println(first+"canEnd");
                 tasks.poll();
                 first.onEnded(this);
                 first = tasks.peek();

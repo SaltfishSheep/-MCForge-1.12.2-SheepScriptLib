@@ -1,8 +1,11 @@
 package saltsheep.ssl.puppet.handler;
 
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import noppes.npcs.roles.JobPuppet;
 import saltsheep.ssl.puppet.network.SPacketAnimation;
 

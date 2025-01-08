@@ -63,6 +63,7 @@ public class TaskHandler {
 
     private void applyCaches() {
         taskChains.addAll(taskChainsCaches);
+        taskChainsCaches.clear();
     }
 
     private void updateTask(NodeNI<Task> chain) {

@@ -180,7 +180,7 @@ public abstract class Task
         public boolean invoke() throws Exception {
             if (++this.timeGone >= this.period) {
                 this.timeGone = 0;
-                return this.invoke.call().booleanValue();
+                return this.invoke.call();
             }
             return false;
         }

@@ -13,9 +13,9 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.22.2'
+version = '1.24.1'
 group = 'saltsheep' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'SheepScriptLib'
+archivesBaseName = '[1.12.2]SheepScriptLib'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
@@ -93,13 +93,15 @@ dependencies {
 jar {
     manifest {
         attributes([
-            "Specification-Title": "examplemod",
-            "Specification-Vendor": "examplemodsareus",
+            "Specification-Title": "sheepscriptlib",
+            "Specification-Vendor": "Saltfish_Sheep",
             "Specification-Version": "1", // We are version 1 of ourselves
             "Implementation-Title": project.name,
             "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"examplemodsareus",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            "Implementation-Vendor" :"Saltfish_Sheep",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+            "FMLCorePlugin": "saltsheep.ssl.core.SheepScriptLibPlugin",
+            "FMLCorePluginContainsFMLMod": true
         ])
     }
 }

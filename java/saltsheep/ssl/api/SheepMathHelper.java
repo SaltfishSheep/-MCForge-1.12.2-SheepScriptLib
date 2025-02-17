@@ -38,20 +38,28 @@ public class SheepMathHelper {
     }
 
     public static boolean isInRange(IEntity<?> from, IEntity<?> tar, double length, double width) {
+        return isInRange(from,tar,length,width,0,0);
+    }
+
+    public static boolean isInRange(IEntity<?> from, IEntity<?> tar, double length, double width, double offsetForward, double offsetLeft) {
         WrapperVec3d forward = SheepMathHelper.getVec3d(0, from.getRotation());
-        WrapperVec3d side = SheepMathHelper.getVec3d(0, from.getRotation() + 90);
-        double[] vec = {tar.getX() - from.getX(), tar.getY() - from.getY(), tar.getZ() - from.getZ()};
-        double forwardLen = forward.getX() * vec[0] + forward.getZ() * vec[2];
-        double sideLen = Math.abs(side.getX() * vec[0] + side.getZ() * vec[2]);
+        WrapperVec3d left = SheepMathHelper.getVec3d(0, from.getRotation() - 90);
+        double[] vec = {tar.getX() - from.getX() - forward.getX() * offsetForward - left.getX() * offsetLeft,
+                tar.getZ() - from.getZ() - forward.getZ() * offsetForward - left.getZ() * offsetLeft};
+        double forwardLen = forward.getX() * vec[0] + forward.getZ() * vec[1];
+        double sideLen = Math.abs(left.getX() * vec[0] + left.getZ() * vec[1]);
         return forwardLen >= 0 && forwardLen <= length && sideLen <= width * 0.5;
     }
 
     public static float isInFan(IEntity<?> from, IEntity<?> tar, float rotation) {
-        float rotateOffset = from.getRotation() - getYaw(from, tar);
-        while (rotateOffset >= 360.0F)
-            rotateOffset -= 360.0F;
-        while (rotateOffset < 0.0F)
-            rotateOffset += 360.0F;
+        return isInFan(from, tar, rotation, 0);
+    }
+
+    public static float isInFan(IEntity<?> from, IEntity<?> tar, float rotation, float offsetRotation) {
+        float rotateOffset = from.getRotation() + offsetRotation - getYaw(from, tar);
+        rotateOffset = rotateOffset % 360;
+        if (rotateOffset < 0)
+            rotateOffset += 360;
         float semiRotation = rotation / 2.0F;
         if (rotateOffset <= semiRotation || rotateOffset >= 360.0F - semiRotation)
             return rotateOffset;
@@ -59,7 +67,11 @@ public class SheepMathHelper {
     }
 
     public static boolean isInRadius(IEntity<?> from, IEntity<?> tar, double radius) {
-        double xOff = from.getX() - tar.getX(), yOff = from.getY() - tar.getY(), zOff = from.getZ() - tar.getZ();
+        return isInRadius(from.getX(), from.getY(), from.getZ(), tar.getX(), tar.getY(), tar.getZ(), radius);
+    }
+
+    public static boolean isInRadius(double fromX, double fromY, double fromZ, double tarX, double tarY, double tarZ, double radius) {
+        double xOff = fromX - tarX, yOff = fromY - tarY, zOff = fromZ - tarZ;
         double distance2 = xOff * xOff + yOff * yOff + zOff * zOff;
         return (distance2 <= radius * radius);
     }
@@ -98,5 +110,5 @@ public class SheepMathHelper {
         public WrapperVec3d rotateYaw(float yaw) {
             return new WrapperVec3d(this.vec3dIn.rotateYaw((float) ((yaw / 180.0F) * Math.PI)));
         }
-    }
+   } 
 }

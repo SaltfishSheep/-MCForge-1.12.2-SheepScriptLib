@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DecisionNode {
-    private StateMachine states = new StateMachine();
+    private StateContainer states = new StateContainer();
     private IDecision decision;
     private final List<DecisionNode> subs = new LinkedList<>();
     private Task work;
@@ -53,7 +53,7 @@ public class DecisionNode {
         return this.states.get(state);
     }
 
-    public StateMachine getStates() {
+    public StateContainer getStates() {
         return this.states;
     }
 
@@ -72,7 +72,7 @@ public class DecisionNode {
         }
     }
 
-    private void acceptStateMachine(StateMachine states) {
+    private void acceptStateMachine(StateContainer states) {
         if (this.states == states)
             return;
         this.states = states;
@@ -88,7 +88,7 @@ public class DecisionNode {
         int decide();
     }
 
-    public static class StateMachine {
+    public static class StateContainer {
         private final Map<String, Boolean> states = new HashMap<>();
         private boolean defaultValue = false;
 

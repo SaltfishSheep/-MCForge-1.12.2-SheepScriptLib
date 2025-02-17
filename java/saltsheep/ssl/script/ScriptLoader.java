@@ -6,9 +6,12 @@ import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.event.FMLEvent;
 import org.apache.logging.log4j.Logger;
 import saltsheep.ssl.SheepScriptLib;
+import saltsheep.ssl.SheepScriptLibConfig;
 
 import javax.annotation.Nullable;
-import java.io.File;
+import javax.script.ScriptException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class ScriptLoader {
@@ -65,6 +68,21 @@ public class ScriptLoader {
             throw new RuntimeException("Because of unknown reason, the packet(SheepBothScripts in game root packet) was failed to create. How can that be?");
         loadPacket(this.scriptPacket);
         SheepScriptLib.getLogger().info("Successfully loading both side scripts.");
+    }
+
+    public void loadCore() {
+        if (!this.scriptPacket.exists() || !this.scriptPacket.isDirectory())
+            return;
+        File corePacket = new File(this.scriptPacket, "core");
+        if (!corePacket.exists() || !corePacket.isDirectory())
+            return;
+        try {
+            for (File file : corePacket.listFiles())
+                if (file.getName().endsWith(".sslcore.js"))
+                    engineFactory.getScriptEngine().eval(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+        } catch (ScriptException | FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadPacket(File packet) {

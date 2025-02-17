@@ -1,13 +1,14 @@
 package saltsheep.ssl.core;
 
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+import saltsheep.ssl.script.ScriptLoader;
 
 import java.util.Map;
 
 public class SheepScriptLibPlugin
         implements IFMLLoadingPlugin {
     public String[] getASMTransformerClass() {
-        return new String[]{"saltsheep.ssl.puppet.asm.Trans"};
+        return new String[]{"saltsheep.ssl.puppet.asm.Trans", "saltsheep.ssl.core.Trans"};
     }
 
     public String getModContainerClass() {
@@ -19,6 +20,7 @@ public class SheepScriptLibPlugin
     }
 
     public void injectData(Map<String, Object> map) {
+        ScriptLoader.loader.loadCore();
     }
 
     public String getAccessTransformerClass() {

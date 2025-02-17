@@ -3,6 +3,7 @@ package saltsheep.ssl.api;
 import net.minecraft.entity.Entity;
 import noppes.npcs.api.entity.IEntity;
 
+import java.util.UUID;
 import java.util.concurrent.Callable;
 
 public abstract class Task
@@ -10,6 +11,8 @@ public abstract class Task
     public Task next = null;
 
     public Runnable stopRun = null;
+
+    UUID tempIdentify = null;
 
     boolean isError = false;
 
@@ -39,6 +42,10 @@ public abstract class Task
 
     public void start() {
         TaskHandler.instance.appendChain(this);
+    }
+
+    public void stop() {
+        TaskHandler.instance.stop(this);
     }
 
     public final Task append(Task next) {
@@ -97,17 +104,13 @@ public abstract class Task
         }
     }
 
-
     public void init() {
         this.isError = false;
     }
 
-
     public abstract boolean invoke() throws Exception;
 
-
     public abstract Task clone();
-
 
     static class TaskRunnable
             extends Task {
@@ -205,11 +208,10 @@ public abstract class Task
         }
 
         TaskRepeatEntity(Entity entity, String id, Callable<Boolean> invoke, int period) {
-            super(invoke, period);
+            super(()->invoke.call() || !entity.isAddedToWorld(), period);
             this.entity = entity;
             this.id = id;
         }
-
 
         public void init() {
             super.init();

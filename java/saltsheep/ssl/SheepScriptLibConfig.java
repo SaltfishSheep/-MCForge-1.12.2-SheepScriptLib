@@ -26,6 +26,8 @@ public class SheepScriptLibConfig {
     public static String sheepBothSideScript_ScriptCoding = "UTF-8";
     @Comment({"是否启用Task功能，如果不启用，添加Task将会无效（修改必须重启生效）"})
     public static boolean task_enable = true;
+    @Comment({"如果启用该项，当要启动的Task所处的Task链正在运行时，启动这个Task会终止旧的Task链","然而，在Task链数量极多时，这个选项会浪费性能"})
+    public static boolean task_overrideOld = false;
     @Comment({"是否启用新木偶框架"})
     public static boolean neoPuppet_enable = true;
     @Comment({"是否将木偶NPC的BODY旋转实现改为使全模型旋转"})

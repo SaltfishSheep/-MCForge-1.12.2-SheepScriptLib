@@ -50,15 +50,9 @@ public class TaskHandler {
     }
 
     public void stop(UUID identify) {
-        Iterator<NodeNI<Task>> iterator = taskChains.iterator();
-        while (iterator.hasNext()) {
-            NodeNI<Task> chain = iterator.next();
-            if (chain.value.tempIdentify.equals(identify)) {
+        for (NodeNI<Task> chain:taskChains)
+            if (chain.value.tempIdentify.equals(identify))
                 invokeStopRun(chain);
-                iterator.remove();
-                break;
-            }
-        }
     }
 
     public void stopAll() {
@@ -75,6 +69,7 @@ public class TaskHandler {
             } catch (Throwable error) {
                 error.printStackTrace();
             }
+
             chain.value = chain.value.next;
         }
     }
@@ -105,13 +100,13 @@ public class TaskHandler {
             return;
         applyCaches();
         isUpdating = true;
-        LinkedList<NodeNI<Task>> chainsShouldRemoved = new LinkedList<>();
-        for (NodeNI<Task> chain : taskChains) {
+        Iterator<NodeNI<Task>> iterator = taskChains.iterator();
+        while (iterator.hasNext()) {
+            NodeNI<Task> chain = iterator.next();
             updateTask(chain);
             if (chain.value == null)
-                chainsShouldRemoved.add(chain);
+                iterator.remove();
         }
-        taskChains.removeAll(chainsShouldRemoved);
         isUpdating = false;
     }
 }

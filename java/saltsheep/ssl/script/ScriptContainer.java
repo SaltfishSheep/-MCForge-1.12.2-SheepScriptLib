@@ -11,8 +11,7 @@ import saltsheep.ssl.api.EventListenHandler;
 import saltsheep.ssl.api.EventListenerHandler;
 
 import javax.annotation.Nullable;
-import javax.script.Invocable;
-import javax.script.ScriptEngine;
+import javax.script.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
@@ -22,22 +21,27 @@ import java.util.Map;
 
 public class ScriptContainer {
     private final File script;
+    private final String scriptRelativePath;
     private final ScriptEngine engine = ScriptLoader.engineFactory.getScriptEngine();
     boolean useFMLServerEvents = false;
     String containerName = null;
     private Map<String, EventListenerHandler.SheepListener> listeners = new HashMap<>();
     private Throwable lastError = null;
 
-    public ScriptContainer(File script) {
+    public ScriptContainer(File script, String scriptRelativePath) {
         this.script = script;
+        this.scriptRelativePath = scriptRelativePath;
         load();
     }
 
     void load() {
         try {
-            this.containerName = this.script.getAbsolutePath();
-            this.engine.put("script", this);
-            this.engine.put("station", Common.station);
+            this.containerName = scriptRelativePath;
+            Bindings bindings = engine.createBindings();
+            bindings.put(ScriptEngine.FILENAME, this.containerName);
+            bindings.put("script", this);
+            bindings.put("station", Common.station);
+            this.engine.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
             this.engine.eval(new InputStreamReader(new FileInputStream(this.script), SheepScriptLibConfig.sheepBothSideScript_ScriptCoding));
         } catch (Throwable e) {
             this.lastError = e;

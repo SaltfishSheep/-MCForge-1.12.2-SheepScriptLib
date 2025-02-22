@@ -1,5 +1,7 @@
 package saltsheep.ssl.api;
 
+import saltsheep.ssl.common.IGetter;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
@@ -17,14 +19,12 @@ public class StateMachine {
         this.defaultState = defaultState;
     }
 
-    public State setDefault(String defaultState) {
+    public void setDefault(String defaultState) {
         this.defaultState = defaultState;
-        State result = states.get(defaultState);
-        if (result == null) {
-            result = new State();
-            states.put(defaultState, result);
-        }
-        return result;
+    }
+
+    public void setDefault(String defaultState, State state) {
+        this.defaultState = defaultState;
     }
 
     @Nullable
@@ -89,25 +89,37 @@ public class StateMachine {
         public Runnable onEntered;
         public Runnable onStayed;
         public Runnable onExited;
+
         private final List<Transition> transitions = new LinkedList<>();
 
         public void enter() {
             if (this.onEntered != null)
                 this.onEntered.run();
+            for (Transition transition:transitions)
+                transition.onStateEntered();
         }
 
         public void stay() {
             if (this.onStayed != null)
                 this.onStayed.run();
+            for (Transition transition:transitions)
+                transition.onStateStayed();
         }
 
         public void exit() {
             if (this.onExited != null)
                 this.onExited.run();
+            for (Transition transition:transitions)
+                transition.onStateExited();
         }
 
         public State addTransition(String destination, Callable<Boolean> condition) {
             this.transitions.add(new Transition(destination, condition));
+            return this;
+        }
+
+        public State addTransition(String destination, Callable<Boolean> condition, long duration, IGetter<Long> tickGetter) {
+            this.transitions.add(new TransitionTimer(destination, condition, duration, tickGetter));
             return this;
         }
 
@@ -126,12 +138,35 @@ public class StateMachine {
 
     public static class Transition {
         @Nullable
-        private final String destination;
+        protected String destination;
         @Nonnull
-        private final Callable<Boolean> condition;
+        protected Callable<Boolean> condition;
         public Transition(@Nullable String destination, @Nonnull Callable<Boolean> condition) {
             this.destination = destination;
             this.condition = condition;
+        }
+        public void onStateEntered() {}
+        public void onStateStayed() {}
+        public void onStateExited() {}
+    }
+
+    public static class TransitionTimer extends Transition {
+        protected long startTick;
+        protected final long duration;
+        protected final IGetter<Long> tickGetter;
+        public TransitionTimer(@Nullable String destination, @Nonnull Callable<Boolean> condition, long duration, @Nonnull IGetter<Long> tickGetter) {
+            super(destination, condition);
+            this.duration = duration;
+            this.tickGetter = tickGetter;
+            this.condition = ()-> this.tickGetter.get() - this.startTick >= duration && condition.call();
+        }
+        @Override
+        public void onStateEntered() {
+            startTick = tickGetter.get();
+        }
+        @Override
+        public void onStateExited() {
+            startTick = Long.MIN_VALUE;
         }
     }
 

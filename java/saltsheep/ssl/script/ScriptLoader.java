@@ -66,7 +66,7 @@ public class ScriptLoader {
         if (!this.scriptPacket.exists() &&
                 !this.scriptPacket.mkdirs())
             throw new RuntimeException("Because of unknown reason, the packet(SheepBothScripts in game root packet) was failed to create. How can that be?");
-        loadPacket(this.scriptPacket);
+        loadPacket(this.scriptPacket, "");
         SheepScriptLib.getLogger().info("Successfully loading both side scripts.");
     }
 
@@ -85,20 +85,21 @@ public class ScriptLoader {
         }
     }
 
-    private void loadPacket(File packet) {
+    private void loadPacket(File packet, String relativePath) {
         for (File file : packet.listFiles()) {
             if (file.isDirectory()) {
-                loadPacket(file);
+                loadPacket(file, relativePath + file.getName() + '.');
             } else if (file.getName().endsWith(".ssl.js")) {
-                loadScript(file);
+                loadScript(file, relativePath + file.getName().replace(".ssl.js", ""));
             }
         }
     }
 
-    private void loadScript(File script) {
-        ScriptContainer container = new ScriptContainer(script);
+    private void loadScript(File script, String relativePath) {
+        ScriptContainer container = new ScriptContainer(script, relativePath);
         this.containers.add(container);
         Logger log = SheepScriptLib.getLogger();
         log.info("Loading script, file name:" + script.getName() + ", container name:" + container.containerName + ", script state:" + ((container.getLastError() == null) ? "running" : "error"));
     }
+
 }

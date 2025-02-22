@@ -146,6 +146,7 @@ public abstract class Task
 
 
         public void init() {
+            super.init();
             this.delayGone = -1;
         }
 
@@ -176,6 +177,7 @@ public abstract class Task
 
 
         public void init() {
+            super.init();
             this.timeGone = -1;
         }
 
@@ -208,7 +210,7 @@ public abstract class Task
         }
 
         TaskRepeatEntity(Entity entity, String id, Callable<Boolean> invoke, int period) {
-            super(()->invoke.call() || !entity.isAddedToWorld(), period);
+            super(invoke, period);
             this.entity = entity;
             this.id = id;
         }
@@ -255,6 +257,7 @@ public abstract class Task
 
 
         public void init() {
+            super.init();
             if (this.init != null) {
                 this.init.run();
             }

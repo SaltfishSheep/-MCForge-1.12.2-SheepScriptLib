@@ -3,6 +3,8 @@ package saltsheep.ssl.api;
 import net.minecraft.entity.Entity;
 import noppes.npcs.api.entity.IEntity;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
@@ -81,7 +83,7 @@ public abstract class Task
         return this.append(Task.repeatUnique(entity, taskId, invoke, period));
     }
 
-    public final Task setStopRun(Runnable stopRun) {
+    public Task setStopRun(Runnable stopRun) {
         this.stopRun = stopRun;
         return this;
     }

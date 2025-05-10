@@ -9,7 +9,9 @@ import java.util.concurrent.Callable;
 
 public class StateMachine {
 
-    private Map<String, State> states = new HashMap<>();
+    private final Map<String, State> states = new HashMap<>();
+    private final List<Transition> anytimeTrans = new LinkedList<>();
+    private boolean anytimeEnabled = false;
     private String defaultState;
     private State currentState;
 
@@ -25,6 +27,18 @@ public class StateMachine {
 
     public void setDefault(String defaultState, State state) {
         this.defaultState = defaultState;
+    }
+
+    public void setAnytimeEnabled(boolean anytimeEnabled) {
+        this.anytimeEnabled = anytimeEnabled;
+    }
+
+    public void addAnytimeTransition(String destination, Callable<Boolean> condition) {
+        anytimeTrans.add(new Transition(destination, condition));
+    }
+
+    public void addAnytimeTransition(String destination, Callable<Boolean> condition, long duration, IGetter<Long> tickGetter) {
+        anytimeTrans.add(new TransitionTimer(destination, condition, duration, tickGetter));
     }
 
     @Nullable
@@ -65,11 +79,22 @@ public class StateMachine {
         } else {
             boolean canTrans = false;
             String transTo = null;
-            for (Transition transition: currentState.transitions) {
-                if (transition.condition.call()) {
-                    canTrans = true;
-                    transTo = transition.destination;
-                    break;
+            if (anytimeEnabled) {
+                for (Transition transition : anytimeTrans) {
+                    if (transition.condition.call()) {
+                        canTrans = true;
+                        transTo = transition.destination;
+                        break;
+                    }
+                }
+            }
+            if (!canTrans) {
+                for (Transition transition : currentState.transitions) {
+                    if (transition.condition.call()) {
+                        canTrans = true;
+                        transTo = transition.destination;
+                        break;
+                    }
                 }
             }
             if (canTrans) {

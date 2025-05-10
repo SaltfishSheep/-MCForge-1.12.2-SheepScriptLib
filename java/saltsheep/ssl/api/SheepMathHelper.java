@@ -32,8 +32,8 @@ public class SheepMathHelper {
     public static float getPitch(IEntity<?> from, IEntity<?> tar) {
         double x = from.getX() - tar.getX();
         double z = from.getZ() - tar.getZ();
-        double distance = Math.sqrt(x * x + z * z);
         double yOffset = from.getY() - tar.getY();
+        double distance = Math.sqrt(x * x + z * z + yOffset * yOffset);
         return (float) (Math.asin(yOffset / distance) / Math.PI * 180.0D);
     }
 

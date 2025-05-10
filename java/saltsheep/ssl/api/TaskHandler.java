@@ -45,14 +45,15 @@ public class TaskHandler {
     }
 
     public void stop(Task task) {
-        if (task.tempIdentify != null)
+        if (task != null && task.tempIdentify != null)
             stop(task.tempIdentify);
     }
 
     public void stop(UUID identify) {
         for (NodeNI<Task> chain:taskChains)
-            if (chain.value.tempIdentify.equals(identify))
-                invokeStopRun(chain);
+            if (chain.value != null && chain.value.tempIdentify != null)
+                if (chain.value.tempIdentify.equals(identify))
+                    invokeStopRun(chain);
     }
 
     public void stopAll() {

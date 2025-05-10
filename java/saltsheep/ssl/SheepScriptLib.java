@@ -10,11 +10,11 @@ import noppes.npcs.api.wrapper.NPCWrapper;
 import noppes.npcs.api.wrapper.PlayerWrapper;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = "sheepscriptlib", name = "SheepScriptLib", version = "1.22.1", useMetadata = true, dependencies = "required-after:customnpcs;required-after:sheepkeylib", acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.12.2]")
+@Mod(modid = SheepScriptLib.MODID, name = SheepScriptLib.NAME, version = SheepScriptLib.VERSION, useMetadata = true, dependencies = "required-after:customnpcs;required-after:sheepkeylib", acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.12.2]")
 public class SheepScriptLib {
     public static final String MODID = "sheepscriptlib";
     public static final String NAME = "SheepScriptLib";
-    public static final String VERSION = "1.24.4";
+    public static final String VERSION = "1.25.1";
     public static SheepScriptLib instance;
     private static Logger logger;
 
